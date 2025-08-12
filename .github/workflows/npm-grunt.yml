@@ -20,7 +20,7 @@ jobs:
         cache: 'pnpm'
 
     - name: Install pnpm
-      uses: pnpm/action-setup@v2.0.1
+      uses: pnpm/action-setup@v3.0.1
       with:
         version: 8  # 使用你需要的 pnpm 版本，例如 6 或最新版本
         run_install: false  # 先不运行 install，稍后手动执行
@@ -31,7 +31,7 @@ jobs:
       run: |
         echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
     - name: Setup pnpm cache
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
         key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
