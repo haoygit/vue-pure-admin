@@ -22,22 +22,27 @@ const dataProps = {
 </script>
 
 <template>
-  <el-card>
+  <el-card shadow="never">
     <template #header>
       <div class="card-header">
-        <span class="font-medium">
-          扩展elemenet-plus的树形组件包括虚拟树组件，支持连接线
-        </span>
+        <p class="font-medium">
+          扩展 Elemenet Plus 的树形组件包括虚拟树组件，支持连接线
+        </p>
+        <el-link
+          class="mt-2"
+          href="https://github.com/pure-admin/vue-pure-admin/blob/main/src/views/able/line-tree.vue"
+          target="_blank"
+        >
+          代码位置 src/views/able/line-tree.vue
+        </el-link>
       </div>
     </template>
 
     <el-row :gutter="24">
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12" class="mb-[20px]">
-        <el-card>
+        <el-card shadow="never">
           <template #header>
-            <div class="card-header">
-              <span class="font-medium"> 普通树结构 </span>
-            </div>
+            <div class="card-header">普通树结构</div>
           </template>
           <div class="max-h-[550px] overflow-y-auto">
             <el-tree
@@ -62,11 +67,9 @@ const dataProps = {
       </el-col>
 
       <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-        <el-card>
+        <el-card shadow="never">
           <template #header>
-            <div class="card-header">
-              <span class="font-medium"> 虚拟树结构 </span>
-            </div>
+            <div class="card-header">虚拟树结构</div>
           </template>
           <div class="max-h-[550px] overflow-y-auto">
             <el-tree-v2

@@ -1,8 +1,7 @@
 // 参考https://www.npmjs.com/package/element-tree-line (主要是替换需要通过函数传参的方式去注册组件，并添加更好的类型支持，并移除this.$scopedSlots，在3.x中,将所有this.$scopedSlots替换为this.$slots)
-import { isFunction } from "@pureadmin/utils";
-import { h, defineComponent } from "vue";
-import type { PropType } from "vue";
 import "./index.scss";
+import { isFunction } from "@pureadmin/utils";
+import { type PropType, h, defineComponent } from "vue";
 import type {
   TreeNode,
   TreeData,
@@ -91,9 +90,9 @@ export default defineComponent({
         ];
     // 取得每一层的当前节点是不是在当前层级列表的最后一个
     const lastnodeArr = [];
-    let currentNode = this.node;
+    let currentNode: any = this.node;
     while (currentNode) {
-      let parentNode = currentNode.parent;
+      let parentNode: any = currentNode.parent;
       // 兼容element-plus的 el-tree-v2 (Virtualized Tree 虚拟树)
       if (currentNode.level === 1 && !currentNode.parent) {
         // el-tree-v2的第一层node是没有parent的，必需 treeData 创建一个parent

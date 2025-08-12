@@ -1,120 +1,43 @@
 <script setup lang="ts">
-import dayjs from "dayjs";
-import axios from "axios";
-import MdEditor from "md-editor-v3";
-import VueDanmaku from "vue3-danmaku";
-import Bar from "./components/Bar.vue";
-import Pie from "./components/Pie.vue";
-import Line from "./components/Line.vue";
-import TypeIt from "@/components/ReTypeit";
-import Github from "./components/Github.vue";
-import { openLink, randomColor } from "@pureadmin/utils";
+import { ref, markRaw } from "vue";
+import ReCol from "@/components/ReCol";
+import { useDark, randomGradient } from "./utils";
+import WelcomeTable from "./components/table/index.vue";
+import { ReNormalCountTo } from "@/components/ReCountTo";
 import { useRenderFlicker } from "@/components/ReFlicker";
-import { ref, computed, markRaw, onMounted, onUnmounted } from "vue";
+import { ChartBar, ChartLine, ChartRound } from "./components/charts";
+import Segmented, { type OptionsType } from "@/components/ReSegmented";
+import { chartData, barChartData, progressData, latestNewsData } from "./data";
 
 defineOptions({
   name: "Welcome"
 });
 
-const danmus = [
-  "太好用了吧",
-  "so easy",
-  "效率大大提高呀",
-  "还有精简版，还分国际化和非国际化，Perfect 😘",
-  "好多组件呀，爱啦爱啦 ❤️",
-  "精简版开发体验也太赞了吧 🙀",
-  "pure-admin-table 真方便呀",
-  "哇塞，pure-admin-utils 好多常用、易用的工具呀",
-  "我要 star 这个项目，爱啦爱啦",
-  "免费、开源做到这个程度，真不错 👍",
-  "文档简单易懂，上手真快",
-  "呀！还有免费的教学视频呢，我要去学习一下咯",
-  "稳定、可靠，未来可期呀，加油！",
-  "太卷了，太卷了，慢点让我跟上 😄"
-];
+const { isDark } = useDark();
 
-let timer = 0;
-const list = ref();
-const danmaku = ref();
-const date: Date = new Date();
-const loading = ref<boolean>(true);
-const titleClass = computed(() => {
-  return ["text-base", "font-medium"];
-});
-
-setTimeout(() => {
-  loading.value = !loading.value;
-}, 800);
-
-const greetings = computed(() => {
-  if (date.getHours() >= 0 && date.getHours() < 12) {
-    return "上午阳光明媚，祝你薪水翻倍🌞！";
-  } else if (date.getHours() >= 12 && date.getHours() < 18) {
-    return "下午小风娇好，愿你青春不老😃！";
-  } else {
-    return "折一根天使羽毛，愿拂去您的疲惫烦恼忧伤🌛！";
+let curWeek = ref(1); // 0上周、1本周
+const optionsBasis: Array<OptionsType> = [
+  {
+    label: "上周"
+  },
+  {
+    label: "本周"
   }
-});
-
-function resizeHandler() {
-  if (timer) clearTimeout(timer);
-  timer = window.setTimeout(() => {
-    danmaku.value.resize();
-  }, 500);
-}
-
-axios
-  .get("https://api.github.com/repos/xiaoxian521/vue-pure-admin/releases")
-  .then(res => {
-    list.value = res.data.map(v => {
-      return {
-        content: v.body,
-        timestamp: dayjs(v.published_at).format("YYYY/MM/DD hh:mm:ss A"),
-        icon: markRaw(
-          useRenderFlicker({
-            background: randomColor({ type: "hex" }) as string
-          })
-        )
-      };
-    });
-  });
-
-onMounted(() => {
-  window.onresize = () => resizeHandler();
-});
-
-onUnmounted(() => {
-  window.onresize = null;
-});
+];
 </script>
 
 <template>
-  <div class="welcome">
-    <el-card class="top-content dark:border-none">
-      <div class="left-mark select-none">
-        <img
-          src="https://avatars.githubusercontent.com/u/44761321?v=4"
-          title="直达仓库地址"
-          @click="openLink('https://github.com/xiaoxian521/vue-pure-admin')"
-        />
-        <TypeIt
-          :className="'type-it0'"
-          :values="[greetings]"
-          :cursor="false"
-          :speed="60"
-        />
-      </div>
-    </el-card>
-
-    <el-row :gutter="24" style="margin: 20px">
-      <el-col
-        :xs="24"
-        :sm="24"
-        :md="12"
-        :lg="12"
-        :xl="12"
-        style="margin-bottom: 20px"
+  <div>
+    <el-row :gutter="24" justify="space-around">
+      <re-col
+        v-for="(item, index) in chartData"
+        :key="index"
         v-motion
+        class="mb-[18px]"
+        :value="6"
+        :md="12"
+        :sm="12"
+        :xs="24"
         :initial="{
           opacity: 0,
           y: 100
@@ -123,272 +46,232 @@ onUnmounted(() => {
           opacity: 1,
           y: 0,
           transition: {
-            delay: 200
+            delay: 80 * (index + 1)
           }
         }"
       >
-        <el-card style="height: 410px">
-          <template #header>
-            <a
-              :class="titleClass"
-              href="https://github.com/xiaoxian521"
-              target="_black"
+        <el-card class="line-card" shadow="never">
+          <div class="flex justify-between">
+            <span class="text-md font-medium">
+              {{ item.name }}
+            </span>
+            <div
+              class="w-8 h-8 flex justify-center items-center rounded-md"
+              :style="{
+                backgroundColor: isDark ? 'transparent' : item.bgColor
+              }"
             >
-              <TypeIt
-                :className="'type-it1'"
-                :values="['GitHub信息']"
-                :cursor="false"
-                :speed="120"
+              <IconifyIconOffline
+                :icon="item.icon"
+                :color="item.color"
+                width="18"
+                height="18"
               />
-            </a>
-          </template>
-          <el-skeleton animated :rows="7" :loading="loading">
-            <template #default>
-              <Github />
-              <vue-danmaku
-                ref="danmaku"
-                loop
-                useSlot
-                isSuspend
-                randomChannel
-                :debounce="1200"
-                :danmus="danmus"
-                style="width: 100%; height: 80px"
+            </div>
+          </div>
+          <div class="flex justify-between items-start mt-3">
+            <div class="w-1/2">
+              <ReNormalCountTo
+                :duration="item.duration"
+                :fontSize="'1.6em'"
+                :startVal="100"
+                :endVal="item.value"
+              />
+              <p class="font-medium text-green-500">{{ item.percent }}</p>
+            </div>
+            <ChartLine
+              v-if="item.data.length > 1"
+              class="w-1/2!"
+              :color="item.color"
+              :data="item.data"
+            />
+            <ChartRound v-else class="w-1/2!" />
+          </div>
+        </el-card>
+      </re-col>
+
+      <re-col
+        v-motion
+        class="mb-[18px]"
+        :value="18"
+        :xs="24"
+        :initial="{
+          opacity: 0,
+          y: 100
+        }"
+        :enter="{
+          opacity: 1,
+          y: 0,
+          transition: {
+            delay: 400
+          }
+        }"
+      >
+        <el-card class="bar-card" shadow="never">
+          <div class="flex justify-between">
+            <span class="text-md font-medium">分析概览</span>
+            <Segmented v-model="curWeek" :options="optionsBasis" />
+          </div>
+          <div class="flex justify-between items-start mt-3">
+            <ChartBar
+              :requireData="barChartData[curWeek].requireData"
+              :questionData="barChartData[curWeek].questionData"
+            />
+          </div>
+        </el-card>
+      </re-col>
+
+      <re-col
+        v-motion
+        class="mb-[18px]"
+        :value="6"
+        :xs="24"
+        :initial="{
+          opacity: 0,
+          y: 100
+        }"
+        :enter="{
+          opacity: 1,
+          y: 0,
+          transition: {
+            delay: 480
+          }
+        }"
+      >
+        <el-card shadow="never">
+          <div class="flex justify-between">
+            <span class="text-md font-medium">解决概率</span>
+          </div>
+          <div
+            v-for="(item, index) in progressData"
+            :key="index"
+            :class="[
+              'flex',
+              'justify-between',
+              'items-start',
+              index === 0 ? 'mt-8' : 'mt-[2.15rem]'
+            ]"
+          >
+            <el-progress
+              :text-inside="true"
+              :percentage="item.percentage"
+              :stroke-width="21"
+              :color="item.color"
+              striped
+              striped-flow
+              :duration="item.duration"
+            />
+            <span class="text-nowrap ml-2 text-text_color_regular text-sm">
+              {{ item.week }}
+            </span>
+          </div>
+        </el-card>
+      </re-col>
+
+      <re-col
+        v-motion
+        class="mb-[18px]"
+        :value="18"
+        :xs="24"
+        :initial="{
+          opacity: 0,
+          y: 100
+        }"
+        :enter="{
+          opacity: 1,
+          y: 0,
+          transition: {
+            delay: 560
+          }
+        }"
+      >
+        <el-card shadow="never" class="h-[580px]">
+          <div class="flex justify-between">
+            <span class="text-md font-medium">数据统计</span>
+          </div>
+          <WelcomeTable class="mt-3" />
+        </el-card>
+      </re-col>
+
+      <re-col
+        v-motion
+        class="mb-[18px]"
+        :value="6"
+        :xs="24"
+        :initial="{
+          opacity: 0,
+          y: 100
+        }"
+        :enter="{
+          opacity: 1,
+          y: 0,
+          transition: {
+            delay: 640
+          }
+        }"
+      >
+        <el-card shadow="never">
+          <div class="flex justify-between">
+            <span class="text-md font-medium">最新动态</span>
+          </div>
+          <el-scrollbar max-height="504" class="mt-3">
+            <el-timeline>
+              <el-timeline-item
+                v-for="(item, index) in latestNewsData"
+                :key="index"
+                center
+                placement="top"
+                :icon="
+                  markRaw(
+                    useRenderFlicker({
+                      background: randomGradient({
+                        randomizeHue: true
+                      })
+                    })
+                  )
+                "
+                :timestamp="item.date"
               >
-                <template v-slot:dm="{ danmu }">
-                  <p :style="{ color: randomColor({ type: 'hex' }) as string }">
-                    {{ danmu }}
-                  </p>
-                </template>
-              </vue-danmaku>
-            </template>
-          </el-skeleton>
+                <p class="text-text_color_regular text-sm">
+                  {{
+                    `新增 ${item.requiredNumber} 条问题，${item.resolveNumber} 条已解决`
+                  }}
+                </p>
+              </el-timeline-item>
+            </el-timeline>
+          </el-scrollbar>
         </el-card>
-      </el-col>
-
-      <el-col
-        :xs="24"
-        :sm="24"
-        :md="12"
-        :lg="12"
-        :xl="12"
-        style="margin-bottom: 20px"
-        v-motion
-        :initial="{
-          opacity: 0,
-          y: 100
-        }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: 200
-          }
-        }"
-      >
-        <el-card style="height: 410px">
-          <template #header>
-            <a
-              :class="titleClass"
-              href="https://github.com/xiaoxian521/vue-pure-admin/releases"
-              target="_black"
-            >
-              <TypeIt
-                :className="'type-it2'"
-                :values="['PureAdmin 版本日志']"
-                :cursor="false"
-                :speed="80"
-              />
-            </a>
-          </template>
-          <el-skeleton animated :rows="7" :loading="loading">
-            <template #default>
-              <el-scrollbar height="324px">
-                <el-timeline v-show="list?.length > 0">
-                  <el-timeline-item
-                    v-for="(item, index) in list"
-                    :key="index"
-                    :icon="item.icon"
-                    :timestamp="item.timestamp"
-                  >
-                    <md-editor v-model="item.content" preview-only />
-                  </el-timeline-item>
-                </el-timeline>
-                <el-empty v-show="list?.length === 0" />
-              </el-scrollbar>
-            </template>
-          </el-skeleton>
-        </el-card>
-      </el-col>
-
-      <el-col
-        :xs="24"
-        :sm="24"
-        :md="12"
-        :lg="8"
-        :xl="8"
-        style="margin-bottom: 20px"
-        v-motion
-        :initial="{
-          opacity: 0,
-          y: 100
-        }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: 400
-          }
-        }"
-      >
-        <el-card>
-          <template #header>
-            <a
-              :class="titleClass"
-              href="https://github.com/xiaoxian521/vue-pure-admin"
-              target="_black"
-            >
-              <TypeIt
-                :className="'type-it3'"
-                :values="['GitHub饼图信息']"
-                :cursor="false"
-                :speed="120"
-              />
-            </a>
-          </template>
-          <el-skeleton animated :rows="7" :loading="loading">
-            <template #default>
-              <Pie />
-            </template>
-          </el-skeleton>
-        </el-card>
-      </el-col>
-
-      <el-col
-        :xs="24"
-        :sm="24"
-        :md="12"
-        :lg="8"
-        :xl="8"
-        style="margin-bottom: 20px"
-        v-motion
-        :initial="{
-          opacity: 0,
-          y: 100
-        }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: 400
-          }
-        }"
-      >
-        <el-card>
-          <template #header>
-            <a
-              :class="titleClass"
-              href="https://github.com/xiaoxian521/vue-pure-admin"
-              target="_black"
-            >
-              <TypeIt
-                :className="'type-it4'"
-                :values="['GitHub折线图信息']"
-                :cursor="false"
-                :speed="120"
-              />
-            </a>
-          </template>
-          <el-skeleton animated :rows="7" :loading="loading">
-            <template #default>
-              <Line />
-            </template>
-          </el-skeleton>
-        </el-card>
-      </el-col>
-
-      <el-col
-        :xs="24"
-        :sm="24"
-        :md="24"
-        :lg="8"
-        :xl="8"
-        style="margin-bottom: 20px"
-        v-motion
-        :initial="{
-          opacity: 0,
-          y: 100
-        }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: 400
-          }
-        }"
-      >
-        <el-card>
-          <template #header>
-            <a
-              :class="titleClass"
-              href="https://github.com/xiaoxian521/vue-pure-admin"
-              target="_black"
-            >
-              <TypeIt
-                :className="'type-it5'"
-                :values="['GitHub柱状图信息']"
-                :cursor="false"
-                :speed="120"
-              />
-            </a>
-          </template>
-          <el-skeleton animated :rows="7" :loading="loading">
-            <template #default>
-              <Bar />
-            </template>
-          </el-skeleton>
-        </el-card>
-      </el-col>
+      </re-col>
     </el-row>
   </div>
 </template>
 
 <style lang="scss" scoped>
-:deep(.el-timeline-item) {
-  margin: 6px 0 0 6px;
+:deep(.el-card) {
+  --el-card-border-color: none;
+
+  /* 解决概率进度条宽度 */
+  .el-progress--line {
+    width: 85%;
+  }
+
+  /* 解决概率进度条字体大小 */
+  .el-progress-bar__innerText {
+    font-size: 15px;
+  }
+
+  /* 隐藏 el-scrollbar 滚动条 */
+  .el-scrollbar__bar {
+    display: none;
+  }
+
+  /* el-timeline 每一项上下、左右边距 */
+  .el-timeline-item {
+    margin: 0 6px;
+  }
 }
 
 .main-content {
-  margin: 0 !important;
-}
-
-.welcome {
-  height: 100%;
-
-  .top-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
-    background: var(--el-bg-color);
-
-    .left-mark {
-      display: flex;
-      align-items: center;
-
-      img {
-        display: block;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        margin-right: 10px;
-        cursor: pointer;
-      }
-
-      span {
-        font-size: 14px;
-      }
-    }
-  }
+  margin: 20px 20px 0 !important;
 }
 </style>

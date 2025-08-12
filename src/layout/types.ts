@@ -1,19 +1,22 @@
-import type { IconifyIcon } from "@iconify/vue";
+import type { FunctionalComponent } from "vue";
+const { VITE_HIDE_HOME } = import.meta.env;
 
-export const routerArrays: Array<RouteConfigs> = [
-  {
-    path: "/welcome",
-    parentPath: "/",
-    meta: {
-      title: "menus.hshome",
-      icon: "homeFilled"
-    }
-  }
-];
+export const routerArrays: Array<RouteConfigs> =
+  VITE_HIDE_HOME === "false"
+    ? [
+        {
+          path: "/welcome",
+          meta: {
+            title: "menus.pureHome",
+            icon: "ep/home-filled"
+          }
+        }
+      ]
+    : [];
 
 export type routeMetaType = {
   title?: string;
-  icon?: string | IconifyIcon;
+  icon?: string | FunctionalComponent;
   showLink?: boolean;
   savedPosition?: boolean;
   auths?: Array<string>;
@@ -21,7 +24,6 @@ export type routeMetaType = {
 
 export type RouteConfigs = {
   path?: string;
-  parentPath?: string;
   query?: object;
   params?: object;
   meta?: routeMetaType;
@@ -34,7 +36,7 @@ export type multiTagsType = {
 };
 
 export type tagsViewsType = {
-  icon: string | IconifyIcon;
+  icon: string | FunctionalComponent;
   text: string;
   divided: boolean;
   disabled: boolean;
@@ -58,23 +60,24 @@ export interface setType {
   hideTabs: boolean;
 }
 
-export type childrenType = {
+export type menuType = {
+  id?: number;
+  name?: string;
   path?: string;
   noShowingChildren?: boolean;
-  children?: childrenType[];
+  children?: menuType[];
   value: unknown;
   meta?: {
     icon?: string;
     title?: string;
+    rank?: number;
     showParent?: boolean;
-    extraIcon?: {
-      svg?: boolean;
-      name?: string;
-    };
+    extraIcon?: string;
   };
   showTooltip?: boolean;
   parentId?: number;
   pathList?: number[];
+  redirect?: string;
 };
 
 export type themeColorsType = {
