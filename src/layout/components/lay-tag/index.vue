@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { $t } from "@/plugins/i18n";
 import { emitter } from "@/utils/mitt";
+import NProgress from "@/utils/progress";
 import { RouteConfigs } from "../../types";
 import { useTags } from "../../hooks/useTag";
 import { routerArrays } from "@/layout/types";
@@ -31,11 +32,11 @@ const {
   visible,
   showTags,
   instance,
+  tagsStyle,
   multiTags,
   tagsViews,
   buttonTop,
   buttonLeft,
-  showModel,
   translateX,
   isFixedTag,
   pureSetting,
@@ -206,12 +207,14 @@ function dynamicRouteTag(value: string): void {
 
 /** 刷新路由 */
 function onFresh() {
+  NProgress.start();
   const { fullPath, query } = unref(route);
   router.replace({
     path: "/redirect" + fullPath,
     query
   });
   handleAliveRoute(route as ToRouteType, "refresh");
+  NProgress.done();
 }
 
 function deleteDynamicTag(obj: any, current: any, tag?: string) {
@@ -353,7 +356,7 @@ function onClickDrop(key, item, selectRoute?: RouteConfigs) {
       break;
   }
   setTimeout(() => {
-    showMenuModel(route.fullPath, route.query);
+    showMenuModel(route.fullPath, route.query, route.params);
   });
 }
 
@@ -388,15 +391,18 @@ function disabledMenus(value: boolean, fixedTag = false) {
 function showMenuModel(
   currentPath: string,
   query: object = {},
+  params: object = {},
   refresh = false
 ) {
   const allRoute = multiTags.value;
   const routeLength = multiTags.value.length;
   let currentIndex = -1;
-  if (isAllEmpty(query)) {
-    currentIndex = allRoute.findIndex(v => v.path === currentPath);
-  } else {
+  if (!isAllEmpty(params)) {
+    currentIndex = allRoute.findIndex(v => isEqual(v.params, params));
+  } else if (!isAllEmpty(query)) {
     currentIndex = allRoute.findIndex(v => isEqual(v.query, query));
+  } else {
+    currentIndex = allRoute.findIndex(v => v.path === currentPath);
   }
   function fixedTagDisabled() {
     if (allRoute[currentIndex]?.meta?.fixedTag) {
@@ -462,14 +468,14 @@ function openMenu(tag, e) {
   } else if (route.path !== tag.path && route.name !== tag.name) {
     // 右键菜单不匹配当前路由，隐藏刷新
     tagsViews[0].show = false;
-    showMenuModel(tag.path, tag.query);
+    showMenuModel(tag.path, tag.query, tag.params);
   } else if (multiTags.value.length === 2 && route.path !== tag.path) {
     showMenus(true);
     // 只有两个标签时不显示关闭其他标签页
     tagsViews[4].show = false;
-  } else if (route.path === tag.path) {
-    // 右键当前激活的菜单
-    showMenuModel(tag.path, tag.query, true);
+    showMenuModel(tag.path, tag.query, tag.params);
+  } else {
+    showMenuModel(tag.path, tag.query, tag.params, true);
   }
 
   currentSelect.value = tag;
@@ -536,8 +542,8 @@ onMounted(() => {
   });
 
   // 改变标签风格
-  emitter.on("tagViewsShowModel", key => {
-    showModel.value = key;
+  emitter.on("tagViewsTagsStyle", key => {
+    tagsStyle.value = key;
   });
 
   //  接收侧边栏切换传递过来的参数
@@ -553,9 +559,9 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  // 解绑`tagViewsChange`、`tagViewsShowModel`、`changLayoutRoute`公共事件，防止多次触发
+  // 解绑`tagViewsChange`、`tagViewsTagsStyle`、`changLayoutRoute`公共事件，防止多次触发
   emitter.off("tagViewsChange");
-  emitter.off("tagViewsShowModel");
+  emitter.off("tagViewsTagsStyle");
   emitter.off("changLayoutRoute");
 });
 </script>
@@ -568,7 +574,7 @@ onBeforeUnmount(() => {
     <div
       ref="scrollbarDom"
       class="scroll-container"
-      :class="showModel === 'chrome' && 'chrome-scroll-container'"
+      :class="tagsStyle === 'chrome' && 'chrome-scroll-container'"
       @wheel.prevent="handleWheel"
     >
       <div ref="tabDom" class="tab select-none" :style="getTabStyle">
@@ -579,7 +585,7 @@ onBeforeUnmount(() => {
           :class="[
             'scroll-item is-closable',
             linkIsActive(item),
-            showModel === 'chrome' && 'chrome-item',
+            tagsStyle === 'chrome' && 'chrome-item',
             isFixedTag(item) && 'fixed-tag'
           ]"
           @contextmenu.prevent="openMenu(item, $event)"
@@ -587,7 +593,7 @@ onBeforeUnmount(() => {
           @mouseleave.prevent="onMouseleave(index)"
           @click="tagOnClick(item)"
         >
-          <template v-if="showModel !== 'chrome'">
+          <template v-if="tagsStyle !== 'chrome'">
             <span
               class="tag-title dark:text-text_color_primary! dark:hover:text-primary!"
             >
@@ -606,12 +612,16 @@ onBeforeUnmount(() => {
               <IconifyIconOffline :icon="Close" />
             </span>
             <span
-              v-if="showModel !== 'card'"
+              v-if="tagsStyle !== 'card'"
               :ref="'schedule' + index"
               :class="[scheduleIsActive(item)]"
             />
           </template>
           <div v-else class="chrome-tab">
+            <span
+              v-if="index !== 0 && index !== activeIndex"
+              class="chrome-tab-divider bg-[#e2e2e2] dark:bg-[#2d2d2d]"
+            />
             <div class="chrome-tab__bg">
               <TagChrome />
             </div>
@@ -625,7 +635,6 @@ onBeforeUnmount(() => {
             >
               <IconifyIconOffline :icon="Close" />
             </span>
-            <span class="chrome-tab-divider" />
           </div>
         </div>
       </div>

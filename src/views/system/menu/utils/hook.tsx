@@ -54,7 +54,7 @@ export function useMenu() {
       cellRenderer: ({ row, props }) => (
         <el-tag
           size={props.size}
-          type={getMenuType(row.menuType)}
+          type={getMenuType(row.menuType) as any}
           effect="plain"
         >
           {getMenuType(row.menuType, true)}
@@ -106,15 +106,18 @@ export function useMenu() {
 
   async function onSearch() {
     loading.value = true;
-    const { data } = await getMenuList(); // 这里是返回一维数组结构，前端自行处理成树结构，返回格式要求：唯一id加父节点parentId，parentId取父节点id
-    let newData = data;
-    if (!isAllEmpty(form.title)) {
-      // 前端搜索菜单名称
-      newData = newData.filter(item =>
-        transformI18n(item.title).includes(form.title)
-      );
+    const { code, data } = await getMenuList(); // 这里是返回一维数组结构，前端自行处理成树结构，返回格式要求：唯一id加父节点parentId，parentId取父节点id
+    if (code === 0) {
+      let newData = data;
+      if (!isAllEmpty(form.title)) {
+        // 前端搜索菜单名称
+        newData = newData.filter(item =>
+          transformI18n(item.title).includes(form.title)
+        );
+      }
+      dataList.value = handleTree(newData); // 处理成树结构
     }
-    dataList.value = handleTree(newData); // 处理成树结构
+
     setTimeout(() => {
       loading.value = false;
     }, 500);

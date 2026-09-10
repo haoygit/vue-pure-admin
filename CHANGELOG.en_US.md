@@ -1,3 +1,94 @@
+# 7.0.0 (2026-04-07)
+
+### ✔️ Refactor
+
+- Refactored the `API` interface response format, resulting in a concise and efficient interface design.
+- Upgraded `stylelint` to `v17`.
+- Replaced the deprecated `next()` with `return` statements in `vue-router` navigation guards.
+- Upgraded `eslint` to `v10`.
+- Renamed `ShowModel` in the global configuration file `platform-config.json` to `TagsStyle` for more accurate semantics.
+- Optimized the `tailwindcss` class name using the `eslint-plugin-better-tailwindcss` plugin.
+- Replaced the `v3-infinite-loading` library with the `useInfiniteScroll` function in `vueuse`.
+- Upgraded `vite` to `v8`, switching from `Rollup` and `esbuild` to `Rolldown` and `Oxc`. Remove `pinia` and `vue-demi` from the `CDN` mode. The latest version of `pinia` no longer depends on `vue-demi`, but the generated `iife` file has issues. We will add `pinia` to `CDN` mode after the issue is fixed.
+- Refactored global type declarations, adding a `PascalCase` to `kebab-case` type mapping, enabling globally registered components to support `kebab-case` syntax and receive full type hints in `TSX`.
+- Upgraded `TypeScript` to `v6`.
+
+### 🎫 Feat
+
+- Added animation effects to the operation buttons in the upper right corner of `layout`.
+- Implemented full text internationalization for `RePureTableBar` and `ReVxeTableBar` components.
+- After a failed `token` API request, redirection to the login page requires re-login.
+- Added "View More" and "Mark as Read" functions to the message dropdown in `layout`.
+- Added full-screen watermark functionality to the system configuration panel.
+- Added fixed column functionality to `RePureTableBar` and `ReVxeTableBar` components.
+
+### 🐞 Bug Fixes
+
+- Fixed the issue of the file upload demo interface being invalid.
+- Fixed the `this.$storage` type error.
+- Fixed the issue of the `ReDialog` and `ReDrawer` components not closing when switching routes upon opening.
+- Fixed the error in the tab operation example when switching internationalization.
+- Locked the `axios` version to `1.14.0`.
+- Fixed the issue of duplicate display of menu search results.
+
+### 🍏 Perf
+
+- Upgraded `vite-plugin-router-warn` to `v2` version, compatible with the latest version of `vue-router`.
+- Optimized the system configuration panel.
+- Optimized the theme color option style.
+- Optimized the interface processing logic.
+- Optimized the internationalization icon style.
+- Optimized the message notification red dot display logic.
+- Dynamically imported the `CDN` plugin to avoid loading redundant code in development mode.
+- Optimized and streamlined the `.husky` file to improve `commit` submission speed.
+- Standardize the `TypeScript` declarations of global custom directives and optimize the `directives.d.ts` file
+  Simplify the `types/shims-vue.d.ts` type file, removing redundant declarations
+  Optimize `prettier` configuration
+
+# 6.3.0 (2025-12-10)
+
+### ✔️ Refactor
+
+- Renamed "Overall Style" in system configuration to "Theme Mode" and "Navigation Mode" to "Menu Layout" to improve naming professionalism and clarity.
+- Migrated the deprecated `tseslint.config` configuration method of `typescript-eslint`.
+
+### 🎫 Feat
+
+- Added a color picker panel component.
+
+### 🐞 Bug fixes
+
+- Fixed an issue where the selected/activated state style of the navigation menu was displayed incorrectly when using `iconfont` icons.
+- Fixed a style issue with the column settings pop-up of the `RePureTableBar` and `ReVxeTableBar` components.
+
+### 🍏 Perf
+
+- Adapting the `ReDialog` component to the latest version of `el-dialog` with API changes and supplementary examples
+- Adapting the `ReDrawer` component to the latest version of `el-drawer` with API changes and supplementary examples
+- Adapting the `message` utility function to the latest version of `ElMessage` with API changes and supplementary examples
+- Importing the latest version of `element-plus` components
+- Optimizing the tab layout and style for Google Chrome mode
+
+# 6.2.0 (2025-10-16)
+
+### 🎫 Features
+
+- Added full-screen `403`, `404`, and `500` error pages. These full-screen error pages are clear and secure, improving the user experience.
+
+### 🐞 Bug Fixes
+
+- Fixed an issue where the built-in homepage did not have a `name` configured, causing cache invalidation after setting the page cache.
+- Fixed an issue where, in an embedded same-origin `iframe` page, when the `beforeunload` event was registered, right-clicking a tab and reloading it would cause the browser to prompt two confirmation blocks.
+- Fixed an issue where pages with `keepAlive: true` set to cache invalidation when the initial load was slow.
+- Fixed an issue where multiple tabs could be activated simultaneously when using the same parameters in different routes.
+- Fixed an issue where the right-click menu on a tab displayed incorrectly when passing `params` parameters.
+
+### 🍏 Perf
+
+- Optimized the `nprogress` progress bar. It no longer displays when reloading a page or requesting an interface, improving the user experience.
+- Optimized the timing of capturing all unmatched routes and redirecting to a full-screen `404` page.
+- Explicitly configured the `Tailwind CSS` entry file path to improve the contextual recognition and prompting performance of the `Tailwind CSS IntelliSense` plugin
+
 # 6.1.0 (2025-07-31)
 
 ### ✔️ Refactor

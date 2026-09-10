@@ -24,7 +24,7 @@ const filteredItems = computed(() => {
       垂直模式 vertical
       <el-input
         v-model="search"
-        class="w-[350px]!"
+        class="w-87.5!"
         clearable
         placeholder="Filter..."
       />
@@ -35,11 +35,20 @@ const filteredItems = computed(() => {
       :min-item-size="54"
       class="scroller"
     >
-      <template #default="{ item, index, active }">
+      <template
+        #default="{
+          item,
+          index,
+          active
+        }: {
+          item: any;
+          index: number;
+          active: boolean;
+        }"
+      >
         <DynamicScrollerItem
           :item="item"
           :active="active"
-          :size-dependencies="[item.id]"
           :data-index="index"
           :data-active="active"
           :title="`Click to change message ${index}`"

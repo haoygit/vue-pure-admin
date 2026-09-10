@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import demoData from "./dataTurbo.json";
-import "@logicflow/core/dist/style/index.css";
+import "@logicflow/core/lib/style/index.css";
 import "@logicflow/extension/lib/style/index.css";
 
-import LogicFlow from "@logicflow/core";
-import { ref, unref, onMounted } from "vue";
+import _LogicFlow from "@logicflow/core";
+import { ref, unref, onMounted, markRaw } from "vue";
 import { BpmnNode } from "@/components/ReFlowChart/src/config";
 import { Snapshot, BpmnElement, Menu } from "@logicflow/extension";
 import { Control, NodePanel, DataDialog } from "@/components/ReFlowChart";
@@ -28,6 +28,9 @@ const config = ref({
 });
 const nodeList = BpmnNode;
 
+const LogicFlow = ((_LogicFlow as any).default ??
+  _LogicFlow) as typeof _LogicFlow;
+
 function initLf() {
   // 画布配置
   LogicFlow.use(Snapshot);
@@ -39,7 +42,7 @@ function initLf() {
     ...unref(config),
     container: document.querySelector("#turbo")
   });
-  lf.value = domLf;
+  lf.value = markRaw(domLf);
   // 设置边类型bpmn:sequenceFlow为默认类型
   unref(lf).setDefaultEdgeType("bpmn:sequenceFlow");
   onRender();
@@ -68,7 +71,7 @@ onMounted(() => {
         <span class="font-medium">
           流程图组件，采用开源的
           <el-link
-            href="https://site.logic-flow.cn/docs/#/zh/guide/start"
+            href="https://site.logic-flow.cn/tutorial/get-started"
             target="_blank"
             style="margin: 0 4px 5px; font-size: 16px"
           >
