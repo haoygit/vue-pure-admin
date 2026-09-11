@@ -5,11 +5,14 @@ FROM node:24-alpine AS build-stage
 
 WORKDIR /app
 
-# 安装 pnpm@9 匹配锁文件 lockfileVersion 9.0 并配置国内镜像源
-RUN npm install -g pnpm@9 && pnpm config set registry https://registry.npmmirror.com
+# 安装与本地一致的 pnpm 大版本
+# 注意：lockfileVersion 9.0 并非 pnpm 9 专属（pnpm 9/10/11 通用），
+# 项目 engines 要求 pnpm>=11，且 pnpm-workspace.yaml 使用了 pnpm 11 的 allowBuilds 字段
+RUN npm config set registry https://registry.npmmirror.com \
+  && npm install -g pnpm@11
 
-# 优先复制依赖描述文件（支持可选的 .npmrc）
-COPY package.json pnpm-lock.yaml .npmr[c] ./
+# 优先复制依赖描述文件（必须包含 pnpm-workspace.yaml，否则 install 阶段读不到 workspace 配置）
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
 # 安装依赖 (使用 BuildKit 缓存挂载机制)
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --no-frozen-lockfile
