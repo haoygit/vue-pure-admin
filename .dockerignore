@@ -31,7 +31,6 @@ report.html
 # Docker / Temporary files
 Dockerfile*
 docker-compose*.yml
-docker/
 .dockerignore
 README*.md
 CHANGELOG*.md
