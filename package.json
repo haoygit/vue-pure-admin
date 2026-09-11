@@ -18,8 +18,14 @@
     "lint:prettier": "prettier --write  \"src/**/*.{js,ts,json,tsx,css,scss,vue,html,md}\"",
     "lint:stylelint": "stylelint --cache --fix \"**/*.{html,vue,css,scss}\" --cache-location node_modules/.cache/stylelint/",
     "lint": "pnpm lint:eslint && pnpm lint:prettier && pnpm lint:stylelint",
+    "commit": "git-cz",
     "prepare": "husky",
     "preinstall": "npx only-allow pnpm"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-git"
+    }
   },
   "keywords": [
     "vue-pure-admin",
@@ -137,7 +143,9 @@
     "@vue/devtools-api": "^8.2.1",
     "boxen": "^8.0.1",
     "code-inspector-plugin": "^2.0.7",
+    "commitizen": "^4.3.2",
     "cssnano": "^8.0.8",
+    "cz-git": "^1.14.0",
     "dagre": "^0.8.5",
     "eslint": "^10.9.0",
     "eslint-config-prettier": "^10.1.8",
