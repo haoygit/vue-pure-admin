@@ -131,21 +131,39 @@ pnpm dev
 pnpm build
 ```
 
-## Docker 支持
+## Docker 与 CI/CD 部署
 
-1. 自定义镜像名为 `vue-pure-admin` 的镜像（请注意下面命令末尾有一个点 `.` 表示使用当前路径下的 `Dockerfile` 文件，可根据实际情况指定路径）
+本项目提供生产级的 **Nginx 优化配置**、**Docker 分阶段构建** 及 **GitHub Actions / Jenkins CI/CD 部署** 架构支持。
+
+### 1. 交付文件概览
+
+| 配置文件 / 工具                                                              | 说明                                                                                                                      |
+| :--------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------ |
+| [`docker/nginx.conf`](./docker/nginx.conf)                                   | 生产级 Nginx 配置（Vue SPA 路由、1年 Hash 强缓存、`index.html` 协商/无缓存、Gzip 压缩、安全 Headers 与 `/api/` 反向代理） |
+| [`Dockerfile`](./Dockerfile)                                                 | 分阶段构建 Dockerfile（Node.js 20 + pnpm -> Nginx Alpine），带有依赖层缓存与健康检查                                      |
+| [`docker-compose.yml`](./docker-compose.yml)                                 | Docker Compose 服务编排文件（包含端口映射、健康检查与日志轮转配置）                                                       |
+| [`.github/workflows/docker-ci-cd.yml`](./.github/workflows/docker-ci-cd.yml) | GitHub Actions CI/CD 流水线（代码校验 -> Docker 打包推送 GHCR -> SSH 远程部署）                                           |
+| [`Jenkinsfile`](./Jenkinsfile)                                               | 企业级 Jenkins 声明式流水线（支持环境选择、镜像仓库推送、SSH 自动部署与通知）                                             |
+
+### 2. Docker 本地构建与启动
+
+1. 自定义镜像名为 `vue-pure-admin` 的镜像（请注意下面命令末尾有一个点 `.` 表示使用当前路径下的 `Dockerfile` 文件）
 
 ```bash
 docker build -t vue-pure-admin .
 ```
 
-2. 端口映射并启动 `docker` 容器（`8080:80`：表示在容器中使用 `80` 端口，并将该端口转发到主机的 `8080` 端口；`pure-admin`：表示自定义容器名；`vue-pure-admin`：表示自定义镜像名）
+2. 启动 Docker 容器或通过 Compose 一键拉起
 
 ```bash
-docker run -dp 8080:80  --name pure-admin vue-pure-admin
+# 方式一：直接运行容器 (转发主机的 8080 端口)
+docker run -d -p 8080:80 --name pure-admin vue-pure-admin
+
+# 方式二：使用 Docker Compose 一键启动
+docker-compose up -d
 ```
 
-操作完上面两个命令后，在浏览器打开 `http://localhost:8080` 即可预览
+操作完上面命令后，在浏览器打开 `http://localhost:8080` 即可预览。
 
 当然也可以通过 [Docker Desktop](https://www.docker.com/products/docker-desktop/) 可视化界面去操作 `docker` 项目，如下图
 

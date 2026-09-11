@@ -1,0 +1,147 @@
+name: Frontend Docker CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  lint-and-typecheck:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code 🛎️
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 🚀
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup pnpm 📦
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+          run_install: false
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm cache ⚡
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Install Dependencies 📥
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Type Check 🔎
+        run: pnpm run typecheck
+
+      - name: Lint Check 🧹
+        run: pnpm run lint
+
+  build-and-deploy:
+    name: Build Docker Image & Deploy
+    needs: lint-and-typecheck
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout Code 🛎️
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx 🛠️
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Registry 🔑
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker Metadata 🏷️
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
+            type=semver,pattern={{version}}
+            type=sha,format=short
+
+      - name: Build and Push Docker Image 🚀
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Remote SSH Deployment 🌐
+        uses: appleboy/ssh-action@v1.0.3
+        if: ${{ secrets.REMOTE_HOST != '' }}
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.REMOTE_PORT || 22 }}
+          script: |
+            echo "Logging in to GitHub Container Registry..."
+            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
+            
+            echo "Pulling latest image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            
+            echo "Deploying container..."
+            cd /www/wwwroot/vue-pure-admin || (mkdir -p /www/wwwroot/vue-pure-admin && cd /www/wwwroot/vue-pure-admin)
+            
+            # 使用临时容器名字进行平滑拉起与无缝切换，避免长时间停机
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            
+            echo "Starting new container..."
+            docker run -d \
+              --name vue-pure-admin-frontend-new \
+              --restart always \
+              -p 8080:80 \
+              ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+
+            sleep 3
+            if docker ps | grep vue-pure-admin-frontend-new > /dev/null; then
+              echo "New container is healthy. Swapping to production port..."
+              docker stop vue-pure-admin-frontend || true
+              docker rm vue-pure-admin-frontend || true
+              docker stop vue-pure-admin-frontend-new
+              docker rm vue-pure-admin-frontend-new
+              
+              docker run -d \
+                --name vue-pure-admin-frontend \
+                --restart always \
+                -p 80:80 \
+                ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+            else
+              echo "❌ New container failed to start! Keeping existing version active."
+              exit 1
+            fi
+            
+            echo "Cleaning up old unused Docker images..."
+            docker image prune -af --filter "until=24h"
