@@ -99,7 +99,9 @@ jobs:
 
       - name: Remote SSH Deployment 🌐
         uses: appleboy/ssh-action@v1.0.3
-        if: ${{ secrets.REMOTE_HOST != '' }}
+        env:
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+        if: env.REMOTE_HOST != ''
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
