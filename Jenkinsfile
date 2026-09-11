@@ -126,6 +126,9 @@ pipeline {
                         """
                     }
                 }
+            }
+        }
+
         stage('Health Verification') {
             steps {
                 echo "===> [Stage 6] 校验部署结果与容器运行状态..."

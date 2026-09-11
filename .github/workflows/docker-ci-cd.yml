@@ -97,16 +97,45 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Remote SSH Deployment 🌐
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Validate Deployment Secrets 🔍
+        id: preflight
         env:
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
-        if: env.REMOTE_HOST != ''
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          missing=""
+          for name in REMOTE_HOST REMOTE_USER SSH_PRIVATE_KEY; do
+            if [ -z "$(printenv "$name")" ]; then
+              missing="$missing $name"
+            fi
+          done
+
+          if [ -z "$missing" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # 三个凭据全部缺失 => 视为未启用远程部署，静默跳过
+          if [ "$missing" = " REMOTE_HOST REMOTE_USER SSH_PRIVATE_KEY" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::未配置远程部署凭据，跳过 SSH 部署步骤"
+            exit 0
+          fi
+
+          # 部分配置 => 明确报错，避免出现 "can't connect without a private SSH key or password"
+          echo "::error::远程部署凭据不完整，缺少:$missing"
+          exit 1
+
+      - name: Remote SSH Deployment 🌐
+        if: steps.preflight.outputs.enabled == 'true'
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.REMOTE_HOST }}
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.REMOTE_PORT || 22 }}
+          script_stop: true
           script: |
             echo "Logging in to GitHub Container Registry..."
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin
