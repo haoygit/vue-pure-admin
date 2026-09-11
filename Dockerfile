@@ -1,7 +1,7 @@
 # =========================================================
-# Stage 1: Build Stage (Node.js 20 + pnpm)
+# Stage 1: Build Stage (Node.js 24 + pnpm)
 # =========================================================
-FROM node:20-alpine AS build-stage
+FROM node:24-alpine AS build-stage
 
 WORKDIR /app
 
@@ -9,8 +9,8 @@ WORKDIR /app
 RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN pnpm config set registry https://registry.npmmirror.com
 
-# 优先复制依赖描述文件，利用 Docker 缓存机制（包没变就不重装）
-COPY package.json pnpm-lock.yaml .npmrc ./
+# 优先复制依赖描述文件（支持可选的 .npmrc）
+COPY package.json pnpm-lock.yaml .npmr[c] ./
 
 # 安装依赖 (使用 BuildKit 缓存挂载机制)
 RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
