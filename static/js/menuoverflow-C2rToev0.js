@@ -1,0 +1,1 @@
+import{n as e,t}from"./objectSpread2-CaLVbc0v.js";import{b as n,k as r,mt as i}from"./runtime-core.esm-bundler-CcQP0ylW.js";e();var a=r(t(t({},{name:`MenuOverflow`}),{},{__name:`index`,setup(e){return(e,t)=>(i(),n(`div`,null,`目录、菜单文字超出显示 Tooltip 文字提示`))}}));export{a as default};

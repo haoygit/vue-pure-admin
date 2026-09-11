@@ -1,0 +1,1 @@
+import{_ as e,b as t,fn as n,mt as r}from"./runtime-core.esm-bundler-CcQP0ylW.js";var i={viewBox:`0 0 24 24`,width:`1em`,height:`1em`};function a(n,a){return r(),t(`svg`,i,[...a[0]||(a[0]=[e(`path`,{fill:`currentColor`,d:`m13.172 12l-4.95-4.95l1.414-1.413L16 12l-6.364 6.364l-1.414-1.415z`},null,-1)])])}var o=n({name:`ri-arrow-right-s-line`,render:a});export{o as t};

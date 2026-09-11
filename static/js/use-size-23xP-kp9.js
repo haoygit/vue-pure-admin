@@ -1,0 +1,1 @@
+import{t as e}from"./size-CbXD8RNi.js";import{J as t,On as n,g as r}from"./runtime-core.esm-bundler-CcQP0ylW.js";import{i}from"./use-namespace-BlrZRuUm.js";var a=i({type:String,values:e,required:!1}),o=Symbol(`size`),s=()=>{let e=t(o,{});return r(()=>n(e.size)||``)};export{s as n,a as r,o as t};

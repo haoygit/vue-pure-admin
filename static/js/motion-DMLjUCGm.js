@@ -1,0 +1,1 @@
+import{B as e,Ct as t,Yt as n,k as r}from"./runtime-core.esm-bundler-CcQP0ylW.js";var i=r({name:`Motion`,props:{delay:{type:Number,default:50}},render(){let{delay:r}=this,i=t(`motion`);return n(e(`div`,{},{default:()=>[this.$slots.default()]}),[[i,{initial:{opacity:0,y:100},enter:{opacity:1,y:0,transition:{delay:r}}}]])}});export{i as t};
