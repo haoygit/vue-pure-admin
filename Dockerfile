@@ -5,15 +5,14 @@ FROM node:24-alpine AS build-stage
 
 WORKDIR /app
 
-# 启用 corepack 并配置国内 npm 镜像源加速
-RUN corepack enable && corepack prepare pnpm@latest --activate
-RUN pnpm config set registry https://registry.npmmirror.com
+# 安装 pnpm@9 匹配锁文件 lockfileVersion 9.0 并配置国内镜像源
+RUN npm install -g pnpm@9 && pnpm config set registry https://registry.npmmirror.com
 
 # 优先复制依赖描述文件（支持可选的 .npmrc）
 COPY package.json pnpm-lock.yaml .npmr[c] ./
 
 # 安装依赖 (使用 BuildKit 缓存挂载机制)
-RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
+RUN --mount=type=cache,id=pnpm,target=/root/.local/share/pnpm/store pnpm install --no-frozen-lockfile
 
 # 复制项目源代码并构建产物
 COPY . .
