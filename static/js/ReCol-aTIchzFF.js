@@ -1,1 +1,0 @@
-import{n as e,t}from"./objectSpread2-CaLVbc0v.js";import{B as n,k as r}from"./runtime-core.esm-bundler-CcQP0ylW.js";import{Ot as i}from"./index-C7OgDoZt.js";e();var a=r({name:`ReCol`,props:{value:{type:Number,default:24}},render(){let e=this.$attrs,r=this.value;return n(i,t({xs:r,sm:r,md:r,lg:r,xl:r},e),{default:()=>this.$slots.default()})}});export{a as t};
