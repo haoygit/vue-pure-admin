@@ -1,8 +1,8 @@
 <h1>vue-pure-admin</h1>
 
-![GitHub license](https://img.shields.io/github/license/pure-admin/vue-pure-admin?style=flat)
-![GitHub stars](https://img.shields.io/github/stars/pure-admin/vue-pure-admin?color=fa6470&style=flat)
-![GitHub forks](https://img.shields.io/github/forks/pure-admin/vue-pure-admin?style=flat)
+![GitHub license](https://img.shields.io/github/license/haoygit/vue-pure-admin?style=flat)
+![GitHub stars](https://img.shields.io/github/stars/haoygit/vue-pure-admin?color=fa6470&style=flat)
+![GitHub forks](https://img.shields.io/github/forks/haoygit/vue-pure-admin?style=flat)
 
 **English** | [中文](./README.md)
 
@@ -45,7 +45,7 @@ The simplified version is based on the shelf extracted from [vue-pure-admin](htt
 
 ## Preview
 
-[preview station](https://pure-admin.github.io/vue-pure-admin)
+[preview station](https://haoygit.github.io/vue-pure-admin)
 
 `PC`
 
@@ -73,7 +73,7 @@ The simplified version is based on the shelf extracted from [vue-pure-admin](htt
 
 Open the project in Gitpod (free online dev environment for GitHub) and start coding immediately.
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/pure-admin/vue-pure-admin)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/haoygit/vue-pure-admin)
 
 ## Install And Use
 
@@ -101,7 +101,7 @@ pure create
 #### Pull from `GitHub`
 
 ```bash
-git clone https://github.com/pure-admin/vue-pure-admin.git
+git clone https://github.com/haoygit/vue-pure-admin.git
 ```
 
 #### Pulled from `Gitee`
@@ -158,7 +158,7 @@ Of course, you can also operate the `docker` project through the [Docker Desktop
 
 ## How to contribute
 
-You are very welcome to join！[Raise an issue](https://github.com/pure-admin/vue-pure-admin/issues/new/choose) Or submit a Pull Request
+You are very welcome to join！[Raise an issue](https://github.com/haoygit/vue-pure-admin/issues/new/choose) Or submit a Pull Request
 
 **Pull Request:**
 
@@ -172,19 +172,19 @@ You are very welcome to join！[Raise an issue](https://github.com/pure-admin/vu
 
 Thank you very much for your in-depth understanding of the source code and your outstanding contributions to the `pure-admin` organization ❤️
 
-|                 **Contributor**                 |                                 **SpecificCode**                                 |
-| :---------------------------------------------: | :------------------------------------------------------------------------------: |
-|       [hb0730](https://github.com/hb0730)       |    [code](https://github.com/pure-admin/vue-pure-admin/commits?author=hb0730)    |
-|         [o-cc](https://github.com/o-cc)         |     [code](https://github.com/pure-admin/vue-pure-admin/commits?author=o-cc)     |
-| [yj-liuzepeng](https://github.com/yj-liuzepeng) | [code](https://github.com/pure-admin/vue-pure-admin/commits?author=yj-liuzepeng) |
-|   [skyline523](https://github.com/skyline523)   |  [code](https://github.com/pure-admin/vue-pure-admin/commits?author=skyline523)  |
-| [shark-lajiao](https://github.com/shark-lajiao) | [code](https://github.com/pure-admin/vue-pure-admin/commits?author=shark-lajiao) |
-|      [WitMiao](https://github.com/WitMiao)      |   [code](https://github.com/pure-admin/vue-pure-admin/commits?author=WitMiao)    |
-|     [QFifteen](https://github.com/QFifteen)     |   [code](https://github.com/pure-admin/vue-pure-admin/commits?author=QFifteen)   |
-|      [edgexie](https://github.com/edgexie)      |   [code](https://github.com/pure-admin/vue-pure-admin/commits?author=edgexie)    |
-|       [way-jm](https://github.com/way-jm)       |    [code](https://github.com/pure-admin/vue-pure-admin/commits?author=way-jm)    |
-|   [simple-hui](https://github.com/simple-hui)   |  [code](https://github.com/pure-admin/vue-pure-admin/commits?author=simple-hui)  |
-|   [tinysimple](https://github.com/tinysimple)   |  [code](https://github.com/pure-admin/vue-pure-admin/commits?author=tinysimple)  |
+|                 **Contributor**                 |                               **SpecificCode**                                |
+| :---------------------------------------------: | :---------------------------------------------------------------------------: |
+|       [hb0730](https://github.com/hb0730)       |    [code](https://github.com/haoygit/vue-pure-admin/commits?author=hb0730)    |
+|         [o-cc](https://github.com/o-cc)         |     [code](https://github.com/haoygit/vue-pure-admin/commits?author=o-cc)     |
+| [yj-liuzepeng](https://github.com/yj-liuzepeng) | [code](https://github.com/haoygit/vue-pure-admin/commits?author=yj-liuzepeng) |
+|   [skyline523](https://github.com/skyline523)   |  [code](https://github.com/haoygit/vue-pure-admin/commits?author=skyline523)  |
+| [shark-lajiao](https://github.com/shark-lajiao) | [code](https://github.com/haoygit/vue-pure-admin/commits?author=shark-lajiao) |
+|      [WitMiao](https://github.com/WitMiao)      |   [code](https://github.com/haoygit/vue-pure-admin/commits?author=WitMiao)    |
+|     [QFifteen](https://github.com/QFifteen)     |   [code](https://github.com/haoygit/vue-pure-admin/commits?author=QFifteen)   |
+|      [edgexie](https://github.com/edgexie)      |   [code](https://github.com/haoygit/vue-pure-admin/commits?author=edgexie)    |
+|       [way-jm](https://github.com/way-jm)       |    [code](https://github.com/haoygit/vue-pure-admin/commits?author=way-jm)    |
+|   [simple-hui](https://github.com/simple-hui)   |  [code](https://github.com/haoygit/vue-pure-admin/commits?author=simple-hui)  |
+|   [tinysimple](https://github.com/tinysimple)   |  [code](https://github.com/haoygit/vue-pure-admin/commits?author=tinysimple)  |
 
 ## Git Contribution submission specification
 
@@ -228,10 +228,10 @@ Completely free and open source
 
 Many thanks to the kind individuals who leave a star. Your support is much appreciated :heart:
 
-[![Stargazers repo roster for @pure-admin/vue-pure-admin](https://bytecrank.com/nastyox/reporoster/php/stargazersSVG.php?user=pure-admin&repo=vue-pure-admin)](https://github.com/pure-admin/vue-pure-admin/stargazers)
+[![Stargazers repo roster for @haoygit/vue-pure-admin](https://bytecrank.com/nastyox/reporoster/php/stargazersSVG.php?user=haoygit&repo=vue-pure-admin)](https://github.com/haoygit/vue-pure-admin/stargazers)
 
 ## `Fork`
 
 It's so cool that you study hard :heart:
 
-[![Forkers repo roster for @pure-admin/vue-pure-admin](https://bytecrank.com/nastyox/reporoster/php/forkersSVG.php?user=pure-admin&repo=vue-pure-admin)](https://github.com/pure-admin/vue-pure-admin/network/members)
+[![Forkers repo roster for @haoygit/vue-pure-admin](https://bytecrank.com/nastyox/reporoster/php/forkersSVG.php?user=haoygit&repo=vue-pure-admin)](https://github.com/haoygit/vue-pure-admin/network/members)
