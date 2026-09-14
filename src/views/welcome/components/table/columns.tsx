@@ -17,7 +17,7 @@ export function useColumns() {
     },
     {
       sortable: true,
-      label: "需求人数",
+      label: "需求人数（个）",
       prop: "requiredNumber",
       filterMultiple: false,
       filterClassName: "pure-table-filter",
